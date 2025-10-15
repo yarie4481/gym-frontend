@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  /* Light theme variables */
+  --background: #f5f7f8; /* background-light */
+  --foreground: #171717; /* Dark text foreground */
+  --primary: #38c0fa;
+  --background-dark: #0f1d23;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-background-dark: var(--background-dark);
+
+  /* Custom colors from your config */
+  --color-background-light: #f5f7f8;
+  --color-background-dark: #0f1d23;
+
+  /* Font family */
+  --font-display: "Inter", sans-serif;
+
+  /* Border radius */
+  --radius-default: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+/* Apply the custom colors as CSS variables */
+:root {
+  --color-primary: #38c0fa;
+  --color-background-light: #f5f7f8;
+  --color-background-dark: #0f1d23;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", sans-serif;
+}
+
+/* Ensure dark mode is handled properly */
+.dark {
+  --background: #0f1d23;
+  --foreground: #ffffff;
+}
+
+/* Custom utility classes for your specific needs */
+.bg-background-light {
+  background-color: var(--color-background-light);
+}
+
+.bg-background-dark {
+  background-color: var(--color-background-dark);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+/* Focus ring customization */
+.focus-ring-primary:focus {
+  ring-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
