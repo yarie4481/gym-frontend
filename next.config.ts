@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   },
   // (optional) you can keep other config options below
   ////
+
+  ////
 };
 
 export default nextConfig;
