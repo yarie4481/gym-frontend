@@ -1,1 +1,1 @@
-export const basUrl = process.env.NEXT_PUBLIC_API_URL;
+export const basUrl = "https://gym-backend-snhy.onrender.com/";
