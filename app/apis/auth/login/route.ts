@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { setAuthTokens } from "@/lib/server-auth";
+import { basUrl } from "@/app/basUrl";
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
     // Call your backend authentication API
-    const response = await fetch("http://localhost:8787/auth/login", {
+    const response = await fetch(`${basUrl}auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
