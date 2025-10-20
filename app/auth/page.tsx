@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import PublicRoute from "@/components/PublicRoute";
 import { useAuth } from "../contexts/AuthContext";
+import { basUrl } from "../basUrl";
 
 function LoginPageContent() {
   const router = useRouter();
@@ -21,7 +22,7 @@ function LoginPageContent() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${basUrl}auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
