@@ -16,13 +16,51 @@ function LoginPageContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Validate form
+  const validateForm = () => {
+    const errors = {
+      email: "",
+      password: "",
+    };
+    let isValid = true;
+
+    if (!email.trim()) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+      isValid = false;
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
 
   // Handle login
-
-  //////////////
   const handleLogin = async () => {
-    setLoading(true);
+    // Clear previous errors
     setError("");
+    setFormErrors({ email: "", password: "" });
+
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await fetch(`${basUrl}auth/login`, {
         method: "POST",
@@ -57,6 +95,21 @@ function LoginPageContent() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleLogin();
+  };
+
+  // Handle input changes and clear field-specific errors
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (formErrors.email) {
+      setFormErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (formErrors.password) {
+      setFormErrors((prev) => ({ ...prev, password: "" }));
+    }
   };
 
   return (
@@ -134,11 +187,18 @@ function LoginPageContent() {
                     type="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     required
-                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+                    className={`w-full rounded-lg border py-3 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 ${
+                      formErrors.email ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
                 </div>
+                {formErrors.email && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -151,11 +211,18 @@ function LoginPageContent() {
                     type="password"
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     required
-                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+                    className={`w-full rounded-lg border py-3 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 ${
+                      formErrors.password ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
                 </div>
+                {formErrors.password && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {formErrors.password}
+                  </p>
+                )}
               </div>
 
               {/* Forgot Password */}
