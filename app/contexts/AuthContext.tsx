@@ -13,6 +13,7 @@ import {
   setUserData,
   isAuthenticated,
 } from "@/lib/client-auth";
+import { basUrl } from "../basUrl";
 
 interface User {
   id: string;
@@ -53,7 +54,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", {
+      await fetch(`${basUrl}api/auth/logout`, {
         method: "POST",
       });
     } catch (error) {
