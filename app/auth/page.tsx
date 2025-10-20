@@ -18,6 +18,8 @@ function LoginPageContent() {
   const [error, setError] = useState("");
 
   // Handle login
+
+  //////////////
   const handleLogin = async () => {
     setLoading(true);
     setError("");
