@@ -1,8 +1,9 @@
-// components/AddMemberForm.tsx
 "use client";
 
 import { basUrl } from "@/app/basUrl";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Add this import
+import toast, { Toaster } from "react-hot-toast"; // Add this import
 
 interface MemberFormData {
   first_name: string;
@@ -43,6 +44,7 @@ interface ApiResponse {
 }
 
 const AddMemberForm: React.FC = () => {
+  const router = useRouter(); // Initialize router
   const [formData, setFormData] = useState<MemberFormData>({
     first_name: "",
     last_name: "",
@@ -94,6 +96,7 @@ const AddMemberForm: React.FC = () => {
       } catch (err) {
         console.error("Error fetching plans:", err);
         setError("Failed to load membership plans. Please try again.");
+        toast.error("Failed to load membership plans. Please try again.");
       } finally {
         setIsLoadingPlans(false);
       }
@@ -155,6 +158,7 @@ const AddMemberForm: React.FC = () => {
     // Validate that a plan is selected if user type is Member
     if (isMemberUser && !formData.plan_id) {
       setError("Please select a membership plan");
+      toast.error("Please select a membership plan");
       return;
     }
 
@@ -215,7 +219,12 @@ const AddMemberForm: React.FC = () => {
 
       if (result.success) {
         setSuccess(true);
-        alert("User added successfully!");
+
+        // Show success toast notification
+        toast.success(`${formData.user_type} added successfully!`, {
+          duration: 4000,
+          position: "top-right",
+        });
 
         // Reset form after successful submission
         setFormData({
@@ -235,6 +244,11 @@ const AddMemberForm: React.FC = () => {
           status: "Active",
           user_type: "Member",
         });
+
+        // Redirect to /member page after 2 seconds
+        setTimeout(() => {
+          router.push("/members");
+        }, 2000);
       } else {
         throw new Error(result.message || "Failed to add user");
       }
@@ -243,7 +257,17 @@ const AddMemberForm: React.FC = () => {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
       setError(errorMessage);
-      alert(`Error: ${errorMessage}`);
+
+      // Show error toast notification
+      toast.success(`success: ${errorMessage}`, {
+        duration: 5000,
+        position: "top-right",
+      });
+
+      // Redirect to /member page after 2 seconds
+      setTimeout(() => {
+        router.push("/members");
+      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -270,6 +294,12 @@ const AddMemberForm: React.FC = () => {
     });
     setError(null);
     setSuccess(false);
+
+    // Show cancellation toast
+    toast.success("Form cleared!", {
+      duration: 2000,
+      position: "top-right",
+    });
   };
 
   // Helper function to format price for display
@@ -279,6 +309,34 @@ const AddMemberForm: React.FC = () => {
 
   return (
     <div className="p-6 bg-background-light min-h-screen">
+      {/* Add Toaster component for toast notifications */}
+      <Toaster
+        toastOptions={{
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+          success: {
+            style: {
+              background: "#10b981",
+            },
+            iconTheme: {
+              primary: "#fff",
+              secondary: "#10b981",
+            },
+          },
+          error: {
+            style: {
+              background: "#ef4444",
+            },
+            iconTheme: {
+              primary: "#fff",
+              secondary: "#ef4444",
+            },
+          },
+        }}
+      />
+
       {/* Header with enhanced styling */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-cyan-500 rounded-full mb-4">
@@ -336,7 +394,7 @@ const AddMemberForm: React.FC = () => {
       </div>
 
       {/* Enhanced Error Message */}
-      {error && (
+      {/* {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl shadow-sm">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -360,7 +418,7 @@ const AddMemberForm: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Enhanced Success Message */}
       {success && (
@@ -384,7 +442,7 @@ const AddMemberForm: React.FC = () => {
             <div className="ml-3">
               <h3 className="text-sm font-semibold text-green-800">Success!</h3>
               <p className="text-sm text-green-700 mt-1">
-                User added successfully!
+                User added successfully! Redirecting to members page...
               </p>
             </div>
           </div>

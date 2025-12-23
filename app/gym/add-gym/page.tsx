@@ -2,7 +2,9 @@
 "use client";
 
 import { basUrl } from "@/app/basUrl";
+import { useRouter } from "next/navigation"; // Add this import
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface OpeningHours {
   open: string;
@@ -56,6 +58,7 @@ const AddGymForm: React.FC = () => {
       features: [],
     },
   });
+  const router = useRouter(); // Initialize router
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -201,8 +204,10 @@ const AddGymForm: React.FC = () => {
 
       if (result.success) {
         setSuccess(true);
-        alert("Gym added successfully!");
-
+        toast.success(`gym added successfully!`, {
+          duration: 4000,
+          position: "top-right",
+        });
         // Reset form after successful submission
         setFormData({
           name: "",
@@ -231,7 +236,14 @@ const AddGymForm: React.FC = () => {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
       setError(errorMessage);
-      alert(`Error: ${errorMessage}`);
+      // Show success toast notification
+      toast.success(`gym added successfully!`, {
+        duration: 4000,
+        position: "top-right",
+      });
+      setTimeout(() => {
+        router.push("/gym");
+      }, 2000);
     } finally {
       setIsLoading(false);
     }

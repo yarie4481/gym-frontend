@@ -288,7 +288,7 @@ const AttendanceTable: React.FC = () => {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-br from-cyan-50 to-blue-50 min-h-screen">
+    <div className="p-6 bg-background-light min-h-screen">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Attendance Records</h1>

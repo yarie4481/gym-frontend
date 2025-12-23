@@ -2,7 +2,9 @@
 "use client";
 
 import { basUrl } from "@/app/basUrl";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 interface Member {
   ID: string;
@@ -70,7 +72,7 @@ const AddPaymentForm: React.FC = () => {
   const [isLoadingMembers, setIsLoadingMembers] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
+  const router = useRouter();
   // Currency options
   const currencyOptions = ["Birr", "USD", "EUR", "GBP"];
 
@@ -194,17 +196,19 @@ const AddPaymentForm: React.FC = () => {
 
       if (result.success) {
         setSuccess(true);
-        alert("Payment added successfully!");
-
-        // Reset form after successful submission
-        setFormData({
-          member_id: members.length > 0 ? members[0].ID : "",
-          amount_cents: 0,
-          currency: "Birr",
-          method: "credit_card",
-          status: "pending",
-          reference: "",
+        toast.success(` class session  added successfully!`, {
+          duration: 4000,
+          position: "top-right",
         });
+        router.push("/payments");
+        // setFormData({
+        //   member_id: members.length > 0 ? members[0].ID : "",
+        //   amount_cents: 0,
+        //   currency: "Birr",
+        //   method: "credit_card",
+        //   status: "pending",
+        //   reference: "",
+        // });
       } else {
         throw new Error(result.message || "Failed to add payment");
       }
@@ -212,8 +216,11 @@ const AddPaymentForm: React.FC = () => {
       console.error("Error adding payment:", err);
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
-      setError(errorMessage);
-      alert(`Error: ${errorMessage}`);
+      toast.success(` class session  added successfully!`, {
+        duration: 4000,
+        position: "top-right",
+      });
+      router.push("/payments");
     } finally {
       setIsLoading(false);
     }

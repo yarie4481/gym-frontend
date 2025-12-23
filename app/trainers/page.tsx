@@ -296,8 +296,8 @@ const TrainerTable: React.FC = () => {
           </button>
           <a href="trainers/add-trainers">
             <button className="flex items-center gap-2 ml-210 rounded-lg bg-cyan-500 px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
-              <span className="material-symbols-outlined"></span>
-              Add Trainer
+              <span className="material-symbols-outlined">Add</span>
+              Trainer
             </button>
           </a>
         </div>

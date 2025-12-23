@@ -2,7 +2,9 @@
 "use client";
 
 import { basUrl } from "@/app/basUrl";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface Class {
   ID: string;
@@ -49,7 +51,7 @@ const AddClassSessionForm: React.FC = () => {
   const [isLoadingClasses, setIsLoadingClasses] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
+  const router = useRouter();
   // Status options
   const statusOptions = [
     { value: "scheduled", label: "Scheduled" },
@@ -112,9 +114,11 @@ const AddClassSessionForm: React.FC = () => {
   };
 
   const handleDateTimeChange = (field: string, value: string) => {
+    // Ensure the time includes seconds
+    const formattedValue = value ? value + ":00" : value;
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: formattedValue,
     }));
   };
 
@@ -123,7 +127,12 @@ const AddClassSessionForm: React.FC = () => {
 
     const start = new Date(startTime);
     const end = new Date(start.getTime() + duration * 60000);
-    return end.toISOString().slice(0, 16);
+
+    // Format to YYYY-MM-DDTHH:MM:SS
+    const pad = (num: number) => num.toString().padStart(2, "0");
+    return `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(
+      end.getDate()
+    )}T${pad(end.getHours())}:${pad(end.getMinutes())}:00`;
   };
 
   const handleClassChange = (classId: string) => {
@@ -149,18 +158,44 @@ const AddClassSessionForm: React.FC = () => {
 
   const handleStartTimeChange = (startTime: string) => {
     const selectedClass = classes.find((c) => c.ID === formData.class_id);
+    // Ensure the time includes seconds
+    const formattedStartTime = startTime ? startTime + ":00" : startTime;
+
     if (selectedClass) {
       setFormData((prev) => ({
         ...prev,
-        starts_at: startTime,
-        ends_at: calculateEndTime(startTime, selectedClass.DurationMinutes),
+        starts_at: formattedStartTime,
+        ends_at: calculateEndTime(
+          formattedStartTime,
+          selectedClass.DurationMinutes
+        ),
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        starts_at: startTime,
+        starts_at: formattedStartTime,
       }));
     }
+  };
+
+  // Add this function at the top of your component, right after the interfaces
+  const formatToRFC3339 = (dateTimeLocal: string): string => {
+    if (!dateTimeLocal) return "";
+
+    // Convert from datetime-local format (YYYY-MM-DDTHH:MM) to RFC3339
+    const date = new Date(dateTimeLocal);
+
+    // Format as RFC3339: YYYY-MM-DDTHH:MM:SSZ (UTC)
+    const pad = (num: number) => num.toString().padStart(2, "0");
+
+    // Get UTC components
+    const year = date.getUTCFullYear();
+    const month = pad(date.getUTCMonth() + 1);
+    const day = pad(date.getUTCDate());
+    const hours = pad(date.getUTCHours());
+    const minutes = pad(date.getUTCMinutes());
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:00Z`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,14 +222,21 @@ const AddClassSessionForm: React.FC = () => {
     setSuccess(false);
 
     try {
-      console.log("Sending data to API:", formData);
+      // Format dates for backend (RFC3339)
+      const formattedData = {
+        ...formData,
+        starts_at: formatToRFC3339(formData.starts_at),
+        ends_at: formatToRFC3339(formData.ends_at),
+      };
 
-      const response = await fetch(`${basUrl}classsession`, {
+      console.log("Sending data to API:", formattedData);
+
+      const response = await fetch(`${basUrl}classsession/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formattedData),
       });
 
       const result: ApiResponse = await response.json();
@@ -207,8 +249,10 @@ const AddClassSessionForm: React.FC = () => {
 
       if (result.success) {
         setSuccess(true);
-        alert("Class session added successfully!");
-
+        toast.success(` class session  added successfully!`, {
+          duration: 4000,
+          position: "top-right",
+        });
         // Reset form after successful submission
         setFormData({
           class_id: classes.length > 0 ? classes[0].ID : "",
@@ -217,6 +261,8 @@ const AddClassSessionForm: React.FC = () => {
           capacity: 20,
           status: "scheduled",
         });
+
+        router.push("/class-session");
       } else {
         throw new Error(result.message || "Failed to add class session");
       }
@@ -225,7 +271,7 @@ const AddClassSessionForm: React.FC = () => {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
       setError(errorMessage);
-      alert(`Error: ${errorMessage}`);
+      router.push("/class-session");
     } finally {
       setIsLoading(false);
     }
@@ -288,7 +334,7 @@ const AddClassSessionForm: React.FC = () => {
       </div>
 
       {/* Enhanced Error Message */}
-      {error && (
+      {/* {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl shadow-sm">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -312,7 +358,7 @@ const AddClassSessionForm: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Enhanced Success Message */}
       {success && (

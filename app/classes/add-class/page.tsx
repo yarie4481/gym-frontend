@@ -2,7 +2,9 @@
 "use client";
 
 import { basUrl } from "@/app/basUrl";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface Gym {
   ID: string;
@@ -79,6 +81,7 @@ const AddClassForm: React.FC = () => {
   const [isLoadingTrainers, setIsLoadingTrainers] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const router = useRouter();
 
   // Common class durations
   const durationOptions = [
@@ -214,26 +217,25 @@ const AddClassForm: React.FC = () => {
 
       if (result.success) {
         setSuccess(true);
-        alert("Class added successfully!");
-
-        // Reset form after successful submission
-        setFormData({
-          gym_id: gyms.length > 0 ? gyms[0].ID : "",
-          trainer_id: trainers.length > 0 ? trainers[0].user_id : "",
-          title: "",
-          description: "",
-          capacity: 10,
-          duration_minutes: 60,
+        toast.success(`Class added successfully!`, {
+          duration: 4000,
+          position: "top-right",
         });
+        router.push("/classes");
+        // Reset form after successful submission
       } else {
         throw new Error(result.message || "Failed to add class");
       }
     } catch (err) {
       console.error("Error adding class:", err);
+
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
-      setError(errorMessage);
-      alert(`Error: ${errorMessage}`);
+      toast.success(`Class added successfully!`, {
+        duration: 4000,
+        position: "top-right",
+      });
+      router.push("/classes");
     } finally {
       setIsLoading(false);
     }

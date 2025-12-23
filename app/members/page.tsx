@@ -296,7 +296,6 @@ const Members: React.FC = () => {
           </button>
           <a href="/members/add-member">
             <button className="flex items-center gap-2 ml-210 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark">
-              <span className="material-symbols-outlined">add</span>
               Add Member
             </button>
           </a>

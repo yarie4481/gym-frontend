@@ -2,7 +2,9 @@
 "use client";
 
 import { basUrl } from "@/app/basUrl";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 interface Member {
   ID: string;
@@ -63,6 +65,7 @@ const TakeAttendanceForm: React.FC = () => {
   const [qrScannerActive, setQrScannerActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scannedMemberId, setScannedMemberId] = useState<string>("");
+  const router = useRouter();
 
   // Fetch members from API
   useEffect(() => {
@@ -192,7 +195,7 @@ const TakeAttendanceForm: React.FC = () => {
     try {
       console.log("Sending attendance data to API:", formData);
 
-      const response = await fetch(`${basUrl}api/attendance`, {
+      const response = await fetch(`${basUrl}attendance/checkin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -210,6 +213,11 @@ const TakeAttendanceForm: React.FC = () => {
 
       if (result.success) {
         setSuccess(true);
+        toast.success(` class session  added successfully!`, {
+          duration: 4000,
+          position: "top-right",
+        });
+        router.push("/attendance");
 
         // Reset form for manual entry
         if (formData.method === "manual") {
@@ -223,6 +231,12 @@ const TakeAttendanceForm: React.FC = () => {
           setSuccess(false);
         }, 3000);
       } else {
+        toast.success(` class session  added successfully!`, {
+          duration: 4000,
+          position: "top-right",
+        });
+        router.push("/attendance");
+
         throw new Error(result.message || "Failed to record attendance");
       }
     } catch (err) {
