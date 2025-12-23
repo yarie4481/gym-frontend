@@ -43,7 +43,7 @@ const GymTable: React.FC = () => {
         setIsLoading(true);
         const response = await fetch(`${basUrl}gymx`, {
           method: "GET",
-          credentials: "include", // Important for cookies/sessions
+          // credentials: "include", // Important for cookies/sessions
           headers: {
             "Content-Type": "application/json",
           },
