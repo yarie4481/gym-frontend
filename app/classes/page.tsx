@@ -84,7 +84,7 @@ const ClassTable: React.FC = () => {
         setError(null);
 
         console.log("Fetching classes from API...");
-        const response = await fetch(`${basUrl}class`, {
+        const response = await fetch(`${basUrl}class/get`, {
           method: "GET",
           credentials: "include", // Important for cookies/sessions
           headers: {
