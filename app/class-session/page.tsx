@@ -88,7 +88,6 @@ const ClassSessionTable: React.FC = () => {
         console.log("Fetching class sessions from API...");
         const response = await fetch(`${basUrl}classsession/get`, {
           method: "GET",
-          credentials: "include", // Important for cookies/sessions
 
           headers: {
             "Content-Type": "application/json",

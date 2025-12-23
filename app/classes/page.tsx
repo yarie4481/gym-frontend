@@ -86,7 +86,6 @@ const ClassTable: React.FC = () => {
         console.log("Fetching classes from API...");
         const response = await fetch(`${basUrl}class/get`, {
           method: "GET",
-          credentials: "include", // Important for cookies/sessions
           headers: {
             "Content-Type": "application/json",
           },
